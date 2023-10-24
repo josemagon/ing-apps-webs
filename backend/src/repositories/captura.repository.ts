@@ -1,6 +1,6 @@
 import {inject} from '@loopback/core';
 import {DefaultCrudRepository} from '@loopback/repository';
-import {InmemoryDataSource} from '../datasources';
+import {MysqlDataSource} from '../datasources';
 import {Captura, CapturaRelations} from '../models';
 
 export class CapturaRepository extends DefaultCrudRepository<
@@ -9,7 +9,7 @@ export class CapturaRepository extends DefaultCrudRepository<
   CapturaRelations
 > {
   constructor(
-    @inject('datasources.inmemory') dataSource: InmemoryDataSource,
+    @inject('datasources.mysql') dataSource: MysqlDataSource,
   ) {
     super(Captura, dataSource);
   }

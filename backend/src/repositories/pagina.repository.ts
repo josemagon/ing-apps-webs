@@ -1,7 +1,7 @@
-import {inject, Getter} from '@loopback/core';
-import {DefaultCrudRepository, repository, HasManyRepositoryFactory} from '@loopback/repository';
-import {InmemoryDataSource} from '../datasources';
-import {Pagina, PaginaRelations, Ejecucion} from '../models';
+import {Getter, inject} from '@loopback/core';
+import {DefaultCrudRepository, HasManyRepositoryFactory, repository} from '@loopback/repository';
+import {MysqlDataSource} from '../datasources';
+import {Ejecucion, Pagina, PaginaRelations} from '../models';
 import {EjecucionRepository} from './ejecucion.repository';
 
 export class PaginaRepository extends DefaultCrudRepository<
@@ -13,7 +13,7 @@ export class PaginaRepository extends DefaultCrudRepository<
   public readonly ejecuciones: HasManyRepositoryFactory<Ejecucion, typeof Pagina.prototype.id>;
 
   constructor(
-    @inject('datasources.inmemory') dataSource: InmemoryDataSource, @repository.getter('EjecucionRepository') protected ejecucionRepositoryGetter: Getter<EjecucionRepository>,
+    @inject('datasources.mysql') dataSource: MysqlDataSource, @repository.getter('EjecucionRepository') protected ejecucionRepositoryGetter: Getter<EjecucionRepository>,
   ) {
     super(Pagina, dataSource);
     this.ejecuciones = this.createHasManyRepositoryFactoryFor('ejecuciones', ejecucionRepositoryGetter,);

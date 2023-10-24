@@ -4,7 +4,7 @@ import {Ejecucion} from './ejecucion.model';
 @model()
 export class Pagina extends Entity {
   @property({
-    type: 'string',
+    type: 'number',
     id: true,
     generated: true,
   })
@@ -40,16 +40,14 @@ export class Pagina extends Entity {
   frecuencia: string;
 
   @property({
-    type: 'string',
-    required: true,
+    type: 'string'
   })
-  request_extractor: string;
+  request_extractor?: string;
 
   @property({
-    type: 'string',
-    required: true,
+    type: 'string'
   })
-  document_extractor: string;
+  document_extractor?: string;
 
   @hasMany(() => Ejecucion)
   ejecuciones: Ejecucion[];
