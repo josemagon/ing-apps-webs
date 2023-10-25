@@ -2,6 +2,15 @@
 import { RouterView } from 'vue-router'
 import TopHeader from './components/TopHeader.vue'
 import SideBar from './components/SideBar.vue';
+
+import './assets/bootstrap-5.3.2-dist/css/bootstrap.min.css'
+import './assets/css/bootstrap-icons/bootstrap-icons.min.css'
+import './assets/css/css@3.css'
+import './assets/css/dashboard.css'
+import './assets/css/search-service.css'
+import BackButton from './components/BackButton.vue';
+import './assets/bootstrap-5.3.2-dist/js/bootstrap.bundle'
+
 </script>
 
 <template>
@@ -10,7 +19,8 @@ import SideBar from './components/SideBar.vue';
   <div class="container-fluid">
     <div class="row">
       <SideBar />
-      <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+      <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 pt-2">
+        <BackButton />
         <RouterView />
       </main>
     </div>
@@ -18,9 +28,10 @@ import SideBar from './components/SideBar.vue';
 </template>
 
 <style>
-html{
+html {
   height: 100%;
 }
+
 .bd-placeholder-img {
   font-size: 1.125rem;
   text-anchor: middle;

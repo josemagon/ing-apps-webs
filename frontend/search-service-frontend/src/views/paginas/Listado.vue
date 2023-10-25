@@ -11,7 +11,6 @@ export default {
         };
     },
     created() {
-        console.log(import.meta.env.VITE_APP_URL);
         this.getListadoPaginas()
     },
     methods: {
@@ -41,7 +40,7 @@ export default {
             <h1 class="h2">Páginas</h1>
             <div class="btn-toolbar mb-2 mb-md-0">
                 <div class="btn-group me-2">
-                    <RouterLink to="/nueva-pagina" class="btn btn-sm btn-outline-secondary">
+                    <RouterLink to="/nueva-pagina" class="btn simple-btn">
                         Nueva
                         <i class="bi bi-plus-circle"></i>
                     </RouterLink>
@@ -58,11 +57,12 @@ export default {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="pagina in  paginas">
-                        <td>{{ pagina.id }}</td>
-                        <td>{{ pagina.titulo }}</td>
-                        <td>{{ pagina.url }}</td>
-                    </tr>
+                    
+                        <tr v-for="pagina in  paginas">
+                            <td><RouterLink :to="'/paginas/' + pagina.id ">{{ pagina.id }}</RouterLink></td>
+                            <td><RouterLink :to="'/paginas/' + pagina.id ">{{ pagina.titulo }}</RouterLink></td>
+                            <td>{{ pagina.url }}</td>
+                        </tr>
                 </tbody>
             </table>
         </div>

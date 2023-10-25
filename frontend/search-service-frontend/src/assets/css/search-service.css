@@ -1,6 +1,22 @@
-.spinner-screen{
+.spinner-screen {
     width: 100%;
     height: 100%;
     text-align: center;
     padding: 20px;
+}
+
+.simple-btn {
+    background: rgba(255, 255, 255, 0);
+    border: 0;
+}
+
+.eliminar-btn{
+    color: rgb(175, 4, 4);
+}
+
+.single-page-img-top {
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    height: 100px;
 }

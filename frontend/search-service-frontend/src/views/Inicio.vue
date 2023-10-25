@@ -3,6 +3,3 @@
         <h1 class="h2">Inicio</h1>
     </div>
 </template>
-
-<script>
-</script>

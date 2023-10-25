@@ -95,9 +95,7 @@ export default {
                 titulo: "",
                 url: "",
                 profundidad: 1,
-                frecuencia: "",
-                request_extractor : "function(){}",
-                document_extractor : "function(){}"
+                frecuencia: ""
             },
             tipo_frecuencia : 'cron',
             loading : false

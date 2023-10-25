@@ -2,7 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import Inicio from '../views/Inicio.vue'
 import PaginasListado from '../views/paginas/Listado.vue'
-import NuevaPagina from '../views/paginas/Nueva.vue'
+import NuevaPagina from '../views/paginas/NuevaPagina.vue'
+import SinglePagina from '../views/paginas/SinglePagina.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -24,7 +25,12 @@ const router = createRouter({
       name: 'nueva-pagina',
       component: NuevaPagina
     },
-
+    {
+      path: '/paginas/:id',
+      name: 'single-pagina',
+      component: SinglePagina,
+      props : true
+    },
 
     {
       path: '/about',
