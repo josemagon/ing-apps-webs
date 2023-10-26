@@ -1,5 +1,5 @@
 <template>
-  <div class="modal" tabindex="-1" :id="`modal-confirm-${name}`">
+  <div class="modal modal-dialog-centered" tabindex="-1" :id="`modal-confirm-${name}`">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-body">

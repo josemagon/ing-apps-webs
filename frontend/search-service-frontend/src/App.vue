@@ -1,5 +1,6 @@
 <script setup>
 import { RouterView } from 'vue-router'
+import { useAuth0 } from '@auth0/auth0-vue'
 import TopHeader from './components/TopHeader.vue'
 import SideBar from './components/SideBar.vue';
 
@@ -10,21 +11,31 @@ import './assets/css/dashboard.css'
 import './assets/css/search-service.css'
 import BackButton from './components/BackButton.vue';
 import './assets/bootstrap-5.3.2-dist/js/bootstrap.bundle'
+import LogIn from './views/LogIn.vue';
+
+const { isAuthenticated } = useAuth0()
 
 </script>
 
 <template>
-  <TopHeader />
-
-  <div class="container-fluid">
-    <div class="row">
-      <SideBar />
-      <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 pt-2">
-        <BackButton />
-        <RouterView />
-      </main>
-    </div>
+  <div v-if="!isAuthenticated" class="d-flex align-items-center py-4 bg-body-tertiary" style="height: 100%">
+    <LogIn />
   </div>
+  <div v-if="isAuthenticated">
+    <TopHeader />
+  
+    <div class="container-fluid">
+      <div class="row">
+        <SideBar />
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 pt-2">
+          <BackButton />
+          <RouterView />
+        </main>
+      </div>
+    </div>
+
+  </div>
+  
 </template>
 
 <style>
