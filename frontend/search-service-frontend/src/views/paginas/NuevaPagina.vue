@@ -84,6 +84,8 @@
 
 <script>
 import Spinner from '../../components/Spinner.vue'
+import { useToastStore } from '../../stores/toast'
+
 export default {
     name: 'NuevaPagina',
     components : {
@@ -98,7 +100,8 @@ export default {
                 frecuencia: ""
             },
             tipo_frecuencia : 'cron',
-            loading : false
+            loading : false,
+            toast : useToastStore()
         }
     },
     created() {
@@ -134,8 +137,10 @@ export default {
                 body : JSON.stringify(this.pagina)
             })
             .then(res => {
-                if(res.ok)
+                if(res.ok){
+                    this.toast.showToast('Éxito', "Página guardada con éxito", "bi bi-check-circle-fill")
                     this.$router.push('/paginas')
+                }
             })
             .catch(err => {
                 console.log('Error: ' + err)

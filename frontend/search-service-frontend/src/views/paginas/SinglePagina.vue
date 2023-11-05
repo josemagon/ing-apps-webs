@@ -75,6 +75,7 @@
 import Spinner from '../../components/Spinner.vue';
 import ExtractorEditorModal from './ExtractorEditorModal.vue';
 import Confirm from '../../components/Confirm.vue';
+import { useToastStore } from '../../stores/toast';
 
 export default {
     name: 'SinglePagina',
@@ -90,7 +91,8 @@ export default {
                 url: "",
                 ultimaEjecucion: null,
                 imagen: null
-            }
+            },
+            toast : useToastStore()
         }
     },
     created() {
@@ -121,8 +123,10 @@ export default {
                     method: 'DELETE'
                 })
                 .then(res => {
-                    if (res.ok)
+                    if (res.ok){
+                        this.toast.showToast('Éxito', 'Página eliminada')
                         this.$router.push('/paginas')
+                    }
                 })
                 .catch(err => {
                     console.log(err)
@@ -143,6 +147,9 @@ export default {
                     body: JSON.stringify(newPagina)
                 })
                 .then(res => {
+                    this.loading = false
+                    this.editing = false
+                    this.toast.showToast('OK', 'Página editada')
                     this.$router.push(`/paginas/${this.pagina.id}`)
                 })
                 .catch(err => {
