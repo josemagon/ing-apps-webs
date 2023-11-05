@@ -76,6 +76,7 @@ import Spinner from '../../components/Spinner.vue';
 import ExtractorEditorModal from './ExtractorEditorModal.vue';
 import Confirm from '../../components/Confirm.vue';
 import { useToastStore } from '../../stores/toast';
+import PaginaService from '../../services/PaginaService';
 
 export default {
     name: 'SinglePagina',
@@ -92,7 +93,7 @@ export default {
                 ultimaEjecucion: null,
                 imagen: null
             },
-            toast : useToastStore()
+            toast: useToastStore()
         }
     },
     created() {
@@ -116,45 +117,30 @@ export default {
                     console.log(err)
                 })
         },
-        eliminarPagina() {
+        async eliminarPagina() {
             this.loading = true
-            fetch(`${import.meta.env.VITE_APP_URL}:${import.meta.env.VITE_APP_PORT}/paginas/${this.id}`,
-                {
-                    method: 'DELETE'
-                })
-                .then(res => {
-                    if (res.ok){
-                        this.toast.showToast('Éxito', 'Página eliminada')
-                        this.$router.push('/paginas')
-                    }
-                })
-                .catch(err => {
-                    console.log(err)
-                })
+            let paginaService = new PaginaService()
+            let res = await paginaService.deletePagina(this.id)
+            if (res.ok) {
+                this.toast.showToast('Éxito', 'Página eliminada')
+                this.$router.push('/paginas')
+            }
         },
-        editPagina() {
+        async editPagina() {
             this.loading = true
             let newPagina = {
                 "titulo": this.pagina.titulo,
                 "url": this.pagina.url
             }
-            fetch(`${import.meta.env.VITE_APP_URL}:${import.meta.env.VITE_APP_PORT}/paginas/${this.id}`,
-                {
-                    method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(newPagina)
-                })
-                .then(res => {
-                    this.loading = false
-                    this.editing = false
-                    this.toast.showToast('OK', 'Página editada')
-                    this.$router.push(`/paginas/${this.pagina.id}`)
-                })
-                .catch(err => {
-                    console.log(err)
-                })
+            let paginaService = new PaginaService()
+            let res = await paginaService.editPagina(this.id, newPagina)
+
+            if (res.ok) {
+                this.loading = false
+                this.editing = false
+                this.toast.showToast('OK', 'Página editada')
+                this.$router.push(`/paginas/${this.pagina.id}`)
+            }
         }
     },
     components: {

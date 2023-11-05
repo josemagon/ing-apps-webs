@@ -33,6 +33,9 @@
 </template>
 
 <script>
+import PaginaService from '../../services/PaginaService'
+import { useToastStore } from '../../stores/toast'
+
 export default {
     name: 'ExtractorEditorModal',
     props: [
@@ -47,7 +50,8 @@ export default {
             changed: false,
             newPagina : {
                 id : null
-            }
+            },
+            toast : useToastStore()
         }
     },
     created(){
@@ -55,29 +59,21 @@ export default {
         this.newContent = this.content
     },
     methods: {
-        editarPagina() {
+        async editarPagina() {
             if (this.type == 'Document')
                 this.newPagina.document_extractor = this.newContent
 
             if (this.type == 'Request')
                 this.newPagina.request_extractor = this.newContent
 
-            fetch(`${import.meta.env.VITE_APP_URL}:${import.meta.env.VITE_APP_PORT}/paginas/${this.paginaId}`,
-                {
-                    method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(this.newPagina)
-                })
-                .then(res => {
-                    if (res.ok)
-                        this.$router.push(`/paginas/${this.paginaId}`)
-                })
-                .catch(err => {
-                    alert(err)
-                })
-
+            let paginaService = new PaginaService()
+            let res = await paginaService.editPagina(this.paginaId, this.newPagina)
+            
+            if (res.ok){
+                this.toast.showToast('OK', 'Extractor actualizado')
+                this.$router.push(`/paginas/${this.paginaId}`)
+                this.changed = false
+            }
         }
     }
 }

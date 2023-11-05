@@ -2,7 +2,7 @@
     <div class="container p-3">
 
         <Spinner v-if="loading" />
-        
+
         <div class="row" v-if="!loading">
             <div class="col-md-6 col-sm-12">
                 <h1>Nueva página</h1>
@@ -38,8 +38,8 @@
                         <div id="frecuenciaHelp" class="form-text">Cada cuánto se va a correr la búsqueda en esta
                             página</div>
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="cronRadioBtn"
-                                checked @change="checkFrecuenciaType">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="cronRadioBtn" checked
+                                @change="checkFrecuenciaType">
                             <label class="form-check-label" for="cronRadioBtn">
                                 Expresión Cron
                             </label>
@@ -54,7 +54,8 @@
                         <div id="cron-expression-fieldset" v-if="tipo_frecuencia == 'cron'">
                             <input id="cron-expression-input" required class="form-control"
                                 aria-describedby="frecuenciaHelp" v-model="pagina.frecuencia" type="text" />
-                            <div class="form-text">Debe ingresar una expresión Cron de <strong>6 campos</strong>. <a href="https://www.manpagez.com/man/5/crontab/" target="_blank">Ayuda</a>
+                            <div class="form-text">Debe ingresar una expresión Cron de <strong>6 campos</strong>. <a
+                                    href="https://www.manpagez.com/man/5/crontab/" target="_blank">Ayuda</a>
                             </div>
                         </div>
                         <div id="precargadas-fieldset" v-if="tipo_frecuencia == 'precargadas'">
@@ -85,10 +86,11 @@
 <script>
 import Spinner from '../../components/Spinner.vue'
 import { useToastStore } from '../../stores/toast'
+import PaginaService from '../../services/PaginaService'
 
 export default {
     name: 'NuevaPagina',
-    components : {
+    components: {
         Spinner
     },
     data() {
@@ -99,9 +101,9 @@ export default {
                 profundidad: 1,
                 frecuencia: ""
             },
-            tipo_frecuencia : 'cron',
-            loading : false,
-            toast : useToastStore()
+            tipo_frecuencia: 'cron',
+            loading: false,
+            toast: useToastStore()
         }
     },
     created() {
@@ -111,40 +113,29 @@ export default {
         document.getElementById('titulo').focus()
     },
     methods: {
-        checkFrecuenciaType(){
-            if(document.getElementById('cronRadioBtn').checked)
+        checkFrecuenciaType() {
+            if (document.getElementById('cronRadioBtn').checked)
                 this.tipo_frecuencia = "cron"
 
-            if(document.getElementById('precargadasRadioBtn').checked)
+            if (document.getElementById('precargadasRadioBtn').checked)
                 this.tipo_frecuencia = "precargadas"
         },
-        sendPagina(e){
+        async sendPagina(e) {
             e.preventDefault()
-            if(this.tipo_frecuencia == 'cron')
+            if (this.tipo_frecuencia == 'cron')
                 this.pagina.frecuencia = document.getElementById('cron-expression-input').value
 
-            if(this.tipo_frecuencia == 'precargadas')
+            if (this.tipo_frecuencia == 'precargadas')
                 this.pagina.frecuencia = document.getElementById('precargadas-input').value
 
             this.loading = true
 
-            fetch(`${import.meta.env.VITE_APP_URL}:${import.meta.env.VITE_APP_PORT}/paginas`,
-            {
-                method : 'POST',
-                headers : {
-                    'Content-Type' : 'application/json'
-                },
-                body : JSON.stringify(this.pagina)
-            })
-            .then(res => {
-                if(res.ok){
-                    this.toast.showToast('Éxito', "Página guardada con éxito", "bi bi-check-circle-fill")
-                    this.$router.push('/paginas')
-                }
-            })
-            .catch(err => {
-                console.log('Error: ' + err)
-            })
+            const paginaService = new PaginaService()
+            let res = await paginaService.addNewPagina(this.pagina)
+            if (res.ok) {
+                this.toast.showToast('Éxito', "Página guardada con éxito", "bi bi-check-circle-fill")
+                this.$router.push('/paginas')
+            }
         }
     }
 }
