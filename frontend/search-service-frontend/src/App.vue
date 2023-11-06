@@ -13,8 +13,32 @@ import './assets/css/search-service.css'
 import BackButton from './components/BackButton.vue';
 import './assets/bootstrap-5.3.2-dist/js/bootstrap.bundle'
 import LogIn from './views/LogIn.vue';
+import { userAuthStore } from './stores/userAuth';
+import { onMounted } from 'vue';
 
 const { isAuthenticated } = useAuth0()
+const { user } = useAuth0()
+const { getAccessTokenSilently, logout } = useAuth0()
+const userStore = userAuthStore()
+
+async function setUserAuthStore() {
+  if (isAuthenticated) {
+    const token = await getAccessTokenSilently()
+    userStore.login(token, user.value)
+  } else {
+    console.log('logging out because I am not authenticated')
+    userStore.logout()
+    logout({
+      logoutParams: {
+        returnTo: window.location.origin
+      }
+    })
+  }
+
+
+}
+
+onMounted(() => setUserAuthStore())
 
 </script>
 
@@ -24,7 +48,7 @@ const { isAuthenticated } = useAuth0()
   </div>
   <div v-if="isAuthenticated">
     <TopHeader />
-  
+
     <div class="container-fluid">
       <div class="row">
         <SideBar />
@@ -37,7 +61,6 @@ const { isAuthenticated } = useAuth0()
 
   </div>
   <Toast />
-  
 </template>
 
 <style>

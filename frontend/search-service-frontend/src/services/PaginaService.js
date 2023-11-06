@@ -9,12 +9,17 @@ export default class PaginaService {
 
     constructor() {
         const user = userAuthStore()
-
         if (user.isAuthenticated) {
-            const token = user.token
+            const token = user.getToken
             if (token)
                 this.headers['Authorization'] = `Bearer ${token}`
         }
+    }
+
+    async getPaginas(){
+        return await fetch(this.baseURL, {
+            headers : this.headers
+        })
     }
 
     async addNewPagina(pagina) {

@@ -1,6 +1,7 @@
 <script>
 import Spinner from '../../components/Spinner.vue'
 import { RouterLink } from 'vue-router'
+import PaginaService from '../../services/PaginaService';
 
 export default {
     data() {
@@ -14,18 +15,13 @@ export default {
         this.getListadoPaginas()
     },
     methods: {
-        getListadoPaginas() {
-            fetch(`${import.meta.env.VITE_APP_URL}:${import.meta.env.VITE_APP_PORT}/paginas`)
-                .then(res => {
-                    res.json().then(
-                        json => {
-                            this.paginas = json
-                            this.loaded = true
-                        })
-                })
-                .catch(err => {
-                    console.log(err);
-                })
+        async getListadoPaginas() {
+            const paginaService = new PaginaService()
+            const res = await paginaService.getPaginas()
+            if(res.ok){
+                this.paginas = res.json()
+                this.loaded = true
+            }
         }
     },
     components: { Spinner, RouterLink }

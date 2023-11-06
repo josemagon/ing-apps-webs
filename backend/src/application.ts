@@ -9,6 +9,8 @@ import {RestApplication} from '@loopback/rest';
 import {ServiceMixin} from '@loopback/service-proxy';
 import path from 'path';
 import {MySequence} from './sequence';
+import { AuthenticationComponent, registerAuthenticationStrategy } from '@loopback/authentication';
+import { JWTAuthenticationStrategy, JWTServiceProvider, KEY } from './authentication-strategies';
 
 export {ApplicationConfig};
 
@@ -29,6 +31,17 @@ export class Tarea2Application extends BootMixin(
       path: '/explorer',
     });
     this.component(RestExplorerComponent);
+
+    this.component(AuthenticationComponent);
+    this.service(JWTServiceProvider);
+
+    registerAuthenticationStrategy(this as any, JWTAuthenticationStrategy)
+
+    this.configure(KEY).to({
+      jwksUri : 'https://dev-qs86j48a.us.auth0.com/.well-known/jwks.json',
+      issuer : 'https://dev-qs86j48a.us.auth0.com/',
+      algorithms : ['RS256']
+    })
 
     this.projectRoot = __dirname;
     // Customize @loopback/boot Booter Conventions here

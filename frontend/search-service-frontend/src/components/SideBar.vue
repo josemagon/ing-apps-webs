@@ -1,5 +1,18 @@
 <script setup>
 import { RouterLink } from 'vue-router'
+import { useAuth0 } from '@auth0/auth0-vue';
+const { logout } = useAuth0()
+import { userAuthStore } from '../stores/userAuth';
+
+function handleLogout(){
+    const userStore = userAuthStore()
+    userStore.logout()
+    logout({
+        logoutParams : {
+            returnTo : window.location.origin
+        }
+    })
+}
 </script>
 
 <template>
@@ -46,13 +59,15 @@ import { RouterLink } from 'vue-router'
                             <svg class="bi">
                                 <use xlink:href="#door-closed" />
                             </svg>
-                            Salir
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                class="bi bi-power" viewBox="0 0 16 16">
-                                <path d="M7.5 1v7h1V1h-1z" />
-                                <path
-                                    d="M3 8.812a4.999 4.999 0 0 1 2.578-4.375l-.485-.874A6 6 0 1 0 11 3.616l-.501.865A5 5 0 1 1 3 8.812z" />
-                            </svg>
+                            <button class="btn simple-btn" @click="handleLogout">
+                                Salir
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                    class="bi bi-power" viewBox="0 0 16 16">
+                                    <path d="M7.5 1v7h1V1h-1z" />
+                                    <path
+                                        d="M3 8.812a4.999 4.999 0 0 1 2.578-4.375l-.485-.874A6 6 0 1 0 11 3.616l-.501.865A5 5 0 1 1 3 8.812z" />
+                                </svg>
+                            </button>
                         </a>
                     </li>
                 </ul>

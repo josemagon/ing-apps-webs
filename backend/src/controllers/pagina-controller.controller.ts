@@ -19,9 +19,20 @@ import {
 } from '@loopback/rest';
 import {Pagina} from '../models';
 import {PaginaRepository} from '../repositories';
+import { authenticate } from '@loopback/authentication';
+import { inject } from '@loopback/core';
+import { SecurityBindings, securityId, UserProfile } from '@loopback/security'
 
+@authenticate({
+  strategy : 'auth0-jwt',
+  options : {
+    scopes : ['pagina']
+  }
+})
 export class PaginaControllerController {
   constructor(
+    @inject(SecurityBindings.USER)
+    currentUserProfile : UserProfile,
     @repository(PaginaRepository)
     public paginaRepository : PaginaRepository,
   ) {}
