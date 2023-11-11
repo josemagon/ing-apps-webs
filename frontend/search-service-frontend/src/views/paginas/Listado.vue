@@ -19,7 +19,7 @@ export default {
             const paginaService = new PaginaService()
             const res = await paginaService.getPaginas()
             if(res.ok){
-                this.paginas = res.json()
+                this.paginas = await res.json()
                 this.loaded = true
             }
         }

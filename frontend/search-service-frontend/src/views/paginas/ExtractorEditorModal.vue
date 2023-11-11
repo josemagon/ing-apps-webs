@@ -60,6 +60,11 @@ export default {
     },
     methods: {
         async editarPagina() {
+            if(!this.validarExtractor(this.newContent)){
+                this.toast.showToast('Error', 'Extractor inválido')
+                return false
+            }
+
             if (this.type == 'Document')
                 this.newPagina.document_extractor = this.newContent
 
@@ -73,6 +78,14 @@ export default {
                 this.toast.showToast('OK', 'Extractor actualizado')
                 this.$router.push(`/paginas/${this.paginaId}`)
                 this.changed = false
+            }
+        },
+        validarExtractor(extractor){
+            try {
+                eval(extractor)
+                return true
+            } catch (error) {
+                return false
             }
         }
     }

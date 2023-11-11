@@ -101,21 +101,17 @@ export default {
             alert('Error.')
         }
     },
-    mounted() {
-        this.setPagina(this.id)
+   async mounted() {
+        await this.setPagina(this.id)
     },
     methods: {
-        setPagina() {
-            fetch(`${import.meta.env.VITE_APP_URL}:${import.meta.env.VITE_APP_PORT}/paginas/${this.id}`)
-                .then(res => {
-                    res.json().then(pagina => {
-                        this.pagina = pagina
-                        this.loading = false
-                    })
-                })
-                .catch(err => {
-                    console.log(err)
-                })
+        async setPagina() {
+            const paginaService = new PaginaService()
+            const res = await paginaService.getPagina(this.id)
+            if(res.ok){
+                this.pagina = await res.json()
+                this.loading = false
+            }
         },
         async eliminarPagina() {
             this.loading = true

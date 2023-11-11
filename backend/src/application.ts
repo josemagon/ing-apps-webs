@@ -1,5 +1,5 @@
 import {BootMixin} from '@loopback/boot';
-import {ApplicationConfig} from '@loopback/core';
+import {ApplicationConfig, createBindingFromClass} from '@loopback/core';
 import {
   RestExplorerBindings,
   RestExplorerComponent,
@@ -11,6 +11,8 @@ import path from 'path';
 import {MySequence} from './sequence';
 import { AuthenticationComponent, registerAuthenticationStrategy } from '@loopback/authentication';
 import { JWTAuthenticationStrategy, JWTServiceProvider, KEY } from './authentication-strategies';
+import { CronComponent } from '@loopback/cron';
+import { PaginasCronJob } from './utils/PaginasCronJob';
 
 export {ApplicationConfig};
 
@@ -34,6 +36,9 @@ export class Tarea2Application extends BootMixin(
 
     this.component(AuthenticationComponent);
     this.service(JWTServiceProvider);
+
+    this.component(CronComponent)
+    this.add(createBindingFromClass(PaginasCronJob))
 
     registerAuthenticationStrategy(this as any, JWTAuthenticationStrategy)
 

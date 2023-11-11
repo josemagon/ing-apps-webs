@@ -16,6 +16,12 @@ export default class PaginaService {
         }
     }
 
+    async getPagina(id){
+        return await fetch(`${this.baseURL}/${id}`, {
+            headers : this.headers
+        })
+    }
+
     async getPaginas(){
         return await fetch(this.baseURL, {
             headers : this.headers
