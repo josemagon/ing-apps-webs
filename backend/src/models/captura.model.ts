@@ -16,6 +16,11 @@ export class Captura extends Entity {
   nombre: string;
 
   @property({
+    type: 'string'
+  })
+  url?: string;
+
+  @property({
     type: 'object',
     required: true,
   })
