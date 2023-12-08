@@ -60,8 +60,7 @@ async function crawlAnchors(anchor: string | undefined, extractorFunction: Funct
         const myAnchor = myAnchorsFiltered[index];
         const myAnchorHref = (myAnchor.attributes.find(a => a.name == "href"))?.value
         console.log("\nYendo a sub pagina: " + myAnchorHref + "\n")
-        let myResults = await crawlAnchors(myAnchorHref, extractorFunction, resultadoActual, profundidad, profundidad++)
-        resultadoActual.push(...myResults)
+        await crawlAnchors(myAnchorHref, extractorFunction, resultadoActual, profundidad, profundidad+1)
     }
 
     return resultadoActual
