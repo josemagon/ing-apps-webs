@@ -15,8 +15,16 @@
                     <label for="url">URL</label>
                     <input type="url" name="url" id="url" v-model="pagina.url" class="form-control" :disabled="!editing">
                 </div>
-                <p class="card-text"><small class="text-body-secondary">{{ (pagina.ultimaEjecucion) ? pagina.ultimaEjecucion
-                    : "Sin ejecuciones recientes" }}</small></p>
+                <p class="card-text" v-if="pagina.ejecuciones.length > 0">
+                    <small class="text-body-secondary">
+                        <RouterLink to="/ejecuciones/">Tiene {{ pagina.ejecuciones.length }} ejecuciones</RouterLink>
+                    </small>
+                </p>
+                <p class="card-text" v-if="!pagina.ejecuciones || pagina.ejecuciones.length == 0">
+                    <small class="text-body-secondary">
+                        Sin ejecuciones recientes
+                    </small>
+                </p>
                 <button class="card-link simple-btn" @click="() => { editing = true }" v-if="!editing">Editar</button>
                 <div v-if="editing" class="mb-3">
                     <button class="card-link simple-btn" @click="() => { editing = false }">Cancelar</button>
@@ -77,6 +85,7 @@ import ExtractorEditorModal from './ExtractorEditorModal.vue';
 import Confirm from '../../components/Confirm.vue';
 import { useToastStore } from '../../stores/toast';
 import PaginaService from '../../services/PaginaService';
+import { RouterLink } from 'vue-router'
 
 export default {
     name: 'SinglePagina',
@@ -108,8 +117,10 @@ export default {
         async setPagina() {
             const paginaService = new PaginaService()
             const res = await paginaService.getPagina(this.id)
+            const ejecucionesRes = await paginaService.getEjecucionsForPagina(this.id)
             if(res.ok){
                 this.pagina = await res.json()
+                this.pagina.ejecuciones = await ejecucionesRes.json()
                 this.loading = false
             }
         },
