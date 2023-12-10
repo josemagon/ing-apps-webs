@@ -1,29 +1,36 @@
-<script setup>
-import { onMounted } from 'vue';
+<script>
 import Spinner from '../../components/Spinner.vue';
 import PaginaService from '../../services/PaginaService';
+import { RouterLink } from 'vue-router'
 
-const props = defineProps(['paginaId'])
-
-let ejecuciones = []
-let loaded = false
-let pagina = null
-
-const setPagina = async (id) => {
-    const paginaService = new PaginaService()
-    const res = await paginaService.getPagina(this.id)
-    const ejecucionesRes = await paginaService.getEjecucionsForPagina(this.id)
-    if(res.ok){
-        pagina = await res.json()
-        pagina.ejecuciones = await ejecucionesRes.json()
-        ejecuciones = pagina.ejecuciones
-        loaded = true
-    }
+export default{
+    name: 'ListadoEjecuciones',
+    props: ['paginaId'],
+    data() {
+        return {
+            ejecuciones: [],
+            loaded: false,
+            pagina: null
+        };
+    },
+    methods: {
+        async setPagina(id) {
+            const paginaService = new PaginaService();
+            const res = await paginaService.getPagina(id);
+            const ejecucionesRes = await paginaService.getEjecucionsForPagina(id);
+            if (res.ok) {
+                this.pagina = await res.json();
+                this.pagina.ejecuciones = await ejecucionesRes.json();
+                this.ejecuciones = this.pagina.ejecuciones;
+                this.loaded = true;
+            }
+        }
+    },
+    async mounted() {
+        await this.setPagina(this.paginaId);
+    },
+    components: { Spinner }
 }
-
-onMounted(async () => {
-    await setPagina(props.paginaId)
-})
 </script>
 
 <template>
@@ -46,14 +53,14 @@ onMounted(async () => {
 
                     <tr v-for="ejecucion in  ejecuciones">
                         <td>
-                            <RouterLink :to="'/ejecucion/' + ejecucion.id">{{ ejecucion.id }}</RouterLink>
+                            <RouterLink :to="'/ejecuciones/' + ejecucion.id">{{ ejecucion.id }}</RouterLink>
                         </td>
                         <td>
-                            <RouterLink :to="'/ejecucion/' + ejecucion.id">{{ ejecucion.fecha }}</RouterLink>
+                            <RouterLink :to="'/ejecuciones/' + ejecucion.id">{{ ejecucion.fecha }}</RouterLink>
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
-
-</div></template>
+    </div>
+</template>

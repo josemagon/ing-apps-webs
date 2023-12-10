@@ -17,7 +17,8 @@
                 </div>
                 <p class="card-text" v-if="pagina.ejecuciones.length > 0">
                     <small class="text-body-secondary">
-                        <RouterLink to="/ejecuciones/">Tiene {{ pagina.ejecuciones.length }} ejecuciones</RouterLink>
+                        <RouterLink :to="'/paginas/' + pagina.id + '/ejecuciones'">Tiene {{ pagina.ejecuciones.length }}
+                            ejecuciones</RouterLink>
                     </small>
                 </p>
                 <p class="card-text" v-if="!pagina.ejecuciones || pagina.ejecuciones.length == 0">
@@ -110,7 +111,7 @@ export default {
             alert('Error.')
         }
     },
-   async mounted() {
+    async mounted() {
         await this.setPagina(this.id)
     },
     methods: {
@@ -118,7 +119,7 @@ export default {
             const paginaService = new PaginaService()
             const res = await paginaService.getPagina(this.id)
             const ejecucionesRes = await paginaService.getEjecucionsForPagina(this.id)
-            if(res.ok){
+            if (res.ok) {
                 this.pagina = await res.json()
                 this.pagina.ejecuciones = await ejecucionesRes.json()
                 this.loading = false
