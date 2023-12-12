@@ -3,6 +3,7 @@ import {
   CountSchema,
   Filter,
   FilterExcludingWhere,
+  OrClause,
   repository,
   Where,
 } from '@loopback/repository';
@@ -16,9 +17,11 @@ import {
   del,
   requestBody,
   response,
+  RestBindings,
+  Request,
 } from '@loopback/rest';
 import {Captura} from '../models';
-import {CapturaRepository} from '../repositories';
+import {CapturaRepository, ClientRepository} from '../repositories';
 import { inject } from '@loopback/core';
 
 export class CapturaControllerController {
@@ -75,6 +78,71 @@ export class CapturaControllerController {
     @param.filter(Captura) filter?: Filter<Captura>,
   ): Promise<Captura[]> {
     return this.capturaRepository.find(filter);
+  }
+
+  @get('/client-search')
+  @response(200, {
+    description: 'Array of Captura model instances',
+    content: {
+      'application/json': {
+        schema: {
+          type: 'array',
+          items: getModelSchemaRef(Captura, {includeRelations: true}),
+        },
+      },
+    },
+  })
+  async clientSearch(
+    @inject(RestBindings.Http.REQUEST) req: Request,
+    @repository(ClientRepository) clientRepository: ClientRepository
+  ): Promise<Captura[]> {
+    let q = req.query.q as String
+    if(!q)
+      return []
+      
+    let palabras: string[] = q.split(' ')
+
+    let token = this.getToken(req)
+    if(!token)
+      return []
+    
+    let apiKeyExists = await clientRepository.findOne({
+      where : {
+        api_key : token + ""
+      }
+    })
+
+    if(!apiKeyExists)
+      return []
+
+    // interface ContenidoLikeCondition {
+    //   contenido: {
+    //     like: string;
+    //   };
+    // }
+
+    // let contenidoLikeConditions: ContenidoLikeCondition[] = []
+    // palabras.forEach( (palabra:string) => {
+    //   contenidoLikeConditions.push({
+    //     contenido : {
+    //       like : palabra
+    //     }
+    //   })
+    // });
+
+    // let orClauses: Where<Captura>[] = palabras.map((palabra) => {
+    //   return {
+        
+    //   }
+    // })
+    
+    return this.capturaRepository.find({
+      where : {
+        contenido : {
+          regexp : new RegExp(palabras.join('|'), 'i')
+        }
+      }
+    });
   }
 
   @patch('/capturas')
@@ -147,5 +215,17 @@ export class CapturaControllerController {
   })
   async deleteById(@param.path.string('id') id: string): Promise<void> {
     await this.capturaRepository.deleteById(id);
+  }
+
+  private getToken(req: Request){
+    if (
+      req.headers.authorization &&
+      req.headers.authorization.split(' ')[0] === 'Bearer'
+    ) {
+      return req.headers.authorization.split(' ')[1];
+    } else if (req.query && req.query.access_token) {
+      return req.query.access_token;
+    }
+    return null;
   }
 }
