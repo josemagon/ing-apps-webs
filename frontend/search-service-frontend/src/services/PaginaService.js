@@ -53,4 +53,10 @@ export default class PaginaService {
                 body : JSON.stringify(pagina)
             })
     }
+
+    async getEjecucionsForPagina(id){
+        return await fetch(`${this.baseURL}/${id}/ejecucions`,{
+            headers : this.headers
+        })
+    }
 }

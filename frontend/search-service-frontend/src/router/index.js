@@ -1,9 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
 import Inicio from '../views/Inicio.vue'
 import PaginasListado from '../views/paginas/Listado.vue'
 import NuevaPagina from '../views/paginas/NuevaPagina.vue'
 import SinglePagina from '../views/paginas/SinglePagina.vue'
+import ListadoEjecuciones from '../views/ejecuciones/ListadoEjecuciones.vue'
+import SingleEjecucion from '../views/ejecuciones/SingleEjecucion.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -29,6 +30,18 @@ const router = createRouter({
       path: '/paginas/:id',
       name: 'single-pagina',
       component: SinglePagina,
+      props : true
+    },
+    {
+      path: '/paginas/:paginaId/ejecuciones',
+      name: 'ejecuciones',
+      component: ListadoEjecuciones,
+      props : true
+    },
+    {
+      path: '/ejecuciones/:ejecucionId',
+      name: 'single-ejecucion',
+      component: SingleEjecucion,
       props : true
     },
 
