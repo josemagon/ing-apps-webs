@@ -6,7 +6,7 @@ import SideBar from './components/SideBar.vue';
 import Toast from './components/Toast.vue';
 
 import './assets/bootstrap-5.3.2-dist/css/bootstrap.min.css'
-import './assets/css/bootstrap-icons/bootstrap-icons.min.css'
+// import './assets/css/bootstrap-icons/bootstrap-icons.min.css'
 import './assets/css/css@3.css'
 import './assets/css/dashboard.css'
 import './assets/css/search-service.css'
