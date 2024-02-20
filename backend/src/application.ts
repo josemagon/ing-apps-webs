@@ -45,6 +45,7 @@ export class Tarea2Application extends BootMixin(
     this.configure(KEY).to({
       jwksUri : 'https://dev-qs86j48a.us.auth0.com/.well-known/jwks.json',
       issuer : 'https://dev-qs86j48a.us.auth0.com/',
+      audience: 'https://dev-qs86j48a.us.auth0.com/api/v2/',
       algorithms : ['RS256']
     })
 
