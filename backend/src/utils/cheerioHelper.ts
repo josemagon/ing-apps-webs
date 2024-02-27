@@ -1,8 +1,10 @@
-import cheerio, { Element } from 'cheerio';
+import cheerio, { Cheerio, CheerioAPI, Element } from 'cheerio';
 import { Captura, Ejecucion, Pagina } from "../models";
 import { CapturaRepository } from '../repositories';
 import { repository } from '@loopback/repository';
 const fetch = require('node-fetch');
+
+let resultados: Array<{url:string, contenido :string}> = []
 
 export async function processPagina(pagina:Pagina){
     if(!pagina.url){
@@ -17,10 +19,9 @@ export async function processPagina(pagina:Pagina){
 
     try {
         const fn = eval(pagina.document_extractor)
-        let resultados: Array<{url:string, contenido :string}> = []
-        let resultadoCompleto = await crawlAnchors(pagina.url, fn, resultados, pagina.profundidad, 0)
-        console.log("\n\nResultado completo " , resultadoCompleto)
-        return resultadoCompleto
+        await crawlAnchors(pagina.url, fn, resultados, pagina.profundidad, 0)
+        console.log("\n\nResultado completo " , resultados)
+        return resultados
     } catch (error) {
         console.log("ERROR : " + error)
     }
@@ -32,7 +33,7 @@ async function crawlAnchors(anchor: string | undefined, extractorFunction: Funct
     console.log("Extrayendo " + anchor)
     
     if(!anchor || anchor == undefined || !anchor.includes("http"))
-        return resultadoActual
+        return
 
     let res = null
     
@@ -45,36 +46,57 @@ async function crawlAnchors(anchor: string | undefined, extractorFunction: Funct
     }
 
     if(!res)
-        return resultadoActual
+        return
 
     const body = await res.text()
 
     const $ = cheerio.load(body)
     
     // guardo una captura
-    resultadoActual.push({
-        url : anchor,
-        contenido : extractorFunction($)
-    })
+    if(resultados.filter(r => r.url == anchor).length == 0){
+        resultados.push({
+            url : anchor,
+            contenido : extractorFunction($)
+        })
+        console.log("\nCaptura guardada\n\n")
+    }
 
-    if(profundidad == profundidadActual)
-        return resultadoActual
+    if(profundidad == profundidadActual){
+        console.log("\nProfundidad max alcanzada. No busco en mis anchors\n")
+        return
+    }
 
     //y cargo a mis anchors
     let myAnchors = $("a").toArray()
+
+    //chequeo que sean validos
     myAnchors = myAnchors.filter(a => $(a).attr("href") && $(a).attr("href") !== undefined && $(a).attr("href")?.includes("http"))
 
-    // filtro por las paginas ya visitadas
-    let myAnchorsFiltered = myAnchors.filter(myAnchor =>
-        resultadoActual.filter(res => res.url !== $(myAnchor).attr("href")).length > 0
-    )
+    let myAnchorsFiltered = await limpiarAnchors(myAnchors, $)
+
+    console.log("\n\nSe detectaron " + myAnchorsFiltered.length + " enlaces en " + anchor + ". Recorriendo... Bajando un nivel en profundidad...\n\n")
 
     for (let index = 0; index < myAnchorsFiltered.length; index++) {
         const myAnchor = myAnchorsFiltered[index];
         const myAnchorHref = $(myAnchor).attr("href")
-        console.log("\nYendo a sub pagina: " + myAnchorHref + "\n")
-        await crawlAnchors(myAnchorHref, extractorFunction, resultadoActual, profundidad, profundidadActual+1)
+        console.log("\nYendo a sub pagina ("+index+"/"+myAnchorsFiltered.length+"): " + myAnchorHref + "\n")
+        await crawlAnchors(myAnchorHref, extractorFunction, resultados, profundidad, profundidadActual+1)
     }
+}
 
-    return resultadoActual
+async function limpiarAnchors(anchors: Element[], $:CheerioAPI){
+    let anchorsUnicos:Array<Element> = []
+
+    // remover anchors repetidos en la misma pagina
+    anchors.forEach(anchor => {
+        if(anchorsUnicos.filter(au => $(au).attr("href") === $(anchor).attr("href")).length == 0)
+            anchorsUnicos.push(anchor)
+    })
+
+    // remover anchors ya visitados
+    anchorsUnicos = anchorsUnicos.filter(au =>
+        resultados.filter(res => res.url === $(au).attr("href")).length == 0
+    )
+
+    return anchorsUnicos
 }
