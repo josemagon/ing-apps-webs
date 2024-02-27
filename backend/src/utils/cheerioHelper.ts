@@ -34,8 +34,18 @@ async function crawlAnchors(anchor: string | undefined, extractorFunction: Funct
     if(!anchor || anchor == undefined || !anchor.includes("http"))
         return resultadoActual
 
-    // me agrego a mi mismo
-    const res = await fetch(anchor)
+    let res = null
+    
+    // agregar manejo de excepciones para requests
+    // con problemas de certificado por ejemplo
+    try {
+        res = await fetch(anchor)
+    } catch (error) {
+        console.log("Error al intentar extraer datos de " + anchor + ", " + error)
+    }
+
+    if(!res)
+        return resultadoActual
 
     const body = await res.text()
 
