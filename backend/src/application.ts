@@ -37,8 +37,8 @@ export class Tarea2Application extends BootMixin(
     this.component(AuthenticationComponent);
     this.service(JWTServiceProvider);
 
-    // this.component(CronComponent)
-    // this.add(createBindingFromClass(PaginasCronJob))
+    this.component(CronComponent)
+    this.add(createBindingFromClass(PaginasCronJob))
 
     registerAuthenticationStrategy(this as any, JWTAuthenticationStrategy)
 

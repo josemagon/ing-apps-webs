@@ -17,6 +17,13 @@ export class Pagina extends Entity {
   url: string;
 
   @property({
+    type: 'boolean',
+    required: true,
+    default: 0
+  })
+  running: boolean;
+
+  @property({
     type: 'string',
     required: true,
   })

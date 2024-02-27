@@ -99,7 +99,8 @@ export default {
                 titulo: "",
                 url: "",
                 profundidad: 1,
-                frecuencia: ""
+                frecuencia: "",
+                running : false
             },
             tipo_frecuencia: 'cron',
             loading: false,
